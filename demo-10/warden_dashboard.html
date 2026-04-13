@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warden Dashboard - Hostel Leave Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .status-pending {
+            color: #ffc107;
+        }
+        .status-approved {
+            color: #28a745;
+        }
+        .status-rejected {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Warden Dashboard</h2>
+                <a href="warden_login.html" class="btn btn-secondary">Logout</a>
+            </div>
+            <div class="mb-4">
+                <h4>Leave Applications</h4>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Department</th>
+                                <th>Roll Number</th>
+                                <th>Leave Date</th>
+                                <th>Return Date</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicationsList">
+                            <!-- Applications will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="noApplications" class="text-center text-muted" style="display: none;">
+                    <p>No pending leave applications.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function updateApplicationStatus(index, status) {
+            let applications = JSON.parse(localStorage.getItem('leaveApplications') || '[]');
+            applications[index].status = status;
+            localStorage.setItem('leaveApplications', JSON.stringify(applications));
+            loadApplications(); // Refresh the list
+        }
+
+        function loadApplications() {
+            const applications = JSON.parse(localStorage.getItem('leaveApplications') || '[]');
+            const applicationsList = document.getElementById('applicationsList');
+            const noApplications = document.getElementById('noApplications');
+
+            applicationsList.innerHTML = ''; // Clear existing content
+
+            if (applications.length === 0) {
+                noApplications.style.display = 'block';
+                return;
+            }
+
+            noApplications.style.display = 'none';
+            applications.forEach((app, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${app.studentName}</td>
+                    <td>${app.department}</td>
+                    <td>${app.rollNumber}</td>
+                    <td>${app.leaveDate}</td>
+                    <td>${app.returnDate}</td>
+                    <td>${app.reason}</td>
+                    <td>
+                        <span class="status-${app.status.toLowerCase()}">
+                            ${app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+                        </span>
+                    </td>
+                    <td>
+                        ${app.status === 'pending' ? `
+                            <button onclick="updateApplicationStatus(${index}, 'approved')" class="btn btn-success btn-sm">Approve</button>
+                            <button onclick="updateApplicationStatus(${index}, 'rejected')" class="btn btn-danger btn-sm">Reject</button>
+                        ` : '-'}
+                    </td>
+                `;
+                applicationsList.appendChild(row);
+            });
+        }
+
+        // Load applications when the page loads
+        window.onload = loadApplications;
+    </script>
+</body>
+</html>

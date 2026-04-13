@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - Hostel Leave Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        }
+        
+        .error-message {
+            color: red;
+            display: none;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="text-center mb-4">Student Login</h2>
+        <form id="studentLoginForm" onsubmit="return validateForm()">
+            <div class="mb-3">
+                <label for="registerNumber" class="form-label">Register Number</label>
+                <input type="text" class="form-control" id="registerNumber" required>
+                <div id="registerError" class="error-message">Please enter a valid register number</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" required>
+                <div id="passwordError" class="error-message">Password must be at least 6 characters</div>
+            </div>
+            <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-primary">Login</button>
+                <a href="index.html" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function validateForm() {
+            const registerNumber = document.getElementById('registerNumber').value;
+            const password = document.getElementById('password').value;
+            let isValid = true;
+
+            if (registerNumber.length < 5) {
+                document.getElementById('registerError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('registerError').style.display = 'none';
+            }
+
+            if (password.length < 6) {
+                document.getElementById('passwordError').style.display = 'block';
+                isValid = false;
+            } else {
+                document.getElementById('passwordError').style.display = 'none';
+            }
+
+            if (isValid) {
+                // Redirect to the leave application form after successful login
+                window.location.href = 'leave_form.html';
+                return false;
+            }
+            return false;
+        }
+    </script>
+</body>
+</html>
